@@ -3,6 +3,7 @@
 namespace neTpyceB\TMCms\Modules\Settings;
 
 use neTpyceB\TMCms\Admin\Messages;
+use neTpyceB\TMCms\DB\SQL;
 use neTpyceB\TMCms\HTML\BreadCrumbs;
 use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
 use neTpyceB\TMCms\HTML\Cms\CmsTable;
@@ -56,14 +57,36 @@ class CmsSettings
 
     public function __settings_form($data = NULL)
     {
+        /** @var CustomSetting $data */
         $form_array = [
             'data' => $data,
             'action' => '?p=' . P . '&do=_add',
             'button' => 'Add',
             'fields' => [
-                'module',
-                'key'
-            ]
+                'module' => [
+                    'validate' => [
+                        'required' => true,
+                    ]
+                ],
+                'key',
+                'input_type' => [
+                    'options' => SQL::getEnumPairs(ModuleSettings::$tables['settings'], 'input_type')
+                ],
+                'input_options' => [ // TODO set checked
+                    'type' => 'checkbox_list',
+                    'options' => [
+                        'editor_wysiwyg' => 'Enable editor - Wysiwyg',
+                        'editor_files' => 'Enable editor - Filemanager',
+                        'editor_pages' => 'Enable editor - Pages',
+                        'require' => 'Field is required',
+                        'not_empty' => 'Check value is not empty',
+                        'is_digit' => 'Check value is digit',
+                        'alphanum' => 'Check value is valid alphanumeric (no spaces)',
+                        'url' => 'Check value is valid URL',
+                        'email' => 'Check value is valid email',
+                    ]
+                ]
+            ],
         ];
 
         return CmsFormHelper::outputForm(ModuleSettings::$tables['settings'],
