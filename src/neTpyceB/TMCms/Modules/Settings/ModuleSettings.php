@@ -20,6 +20,8 @@ class ModuleSettings implements IModule {
 		$data->setWhereModule($module);
 		$data = $data->getPairs('value', 'key');
 
+		// TODO different field types
+
 		if (!$data) {
 			return false;
 		}
@@ -34,5 +36,47 @@ class ModuleSettings implements IModule {
 		return CmsFormHelper::outputForm(self::$tables['settings'],
 				$form_array
 		)->enableAjax();
+	}
+
+	public static function requireUpdateModuleSettings($module)
+	{
+		if (!$_POST) return;
+
+		// Delete all settings for Module
+		$settings = new CustomSettingRepository;
+		$settings->setWhereModule($module);
+		$settings->deleteObjectCollection();
+
+		// Update (create) settings
+		foreach ($_POST as $k => $v) {
+			$setting = new CustomSetting();
+
+			$setting->setModule($module);
+			$setting->setKey($k);
+			$setting->setValue($v);
+
+			$setting->save();
+		}
+
+		if (IS_AJAX_REQUEST) {
+			die('1');
+		}
+
+		back();
+	}
+
+	public static function getCustomSetting($module, $key) {
+
+		$setting = CustomSettingRepository::findOneEntityByCriteria([
+				'module' => $module,
+				'key' => $key
+		]);
+
+		/** @var CustomSetting $setting */
+		if ($setting) {
+			return $setting->getValue();
+		}
+
+		return NULL;
 	}
 }
