@@ -4,6 +4,8 @@ namespace neTpyceB\TMCms\Modules\Settings;
 
 use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
 use neTpyceB\TMCms\Modules\IModule;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 use neTpyceB\TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;

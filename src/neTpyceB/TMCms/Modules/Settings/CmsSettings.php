@@ -11,6 +11,8 @@ use neTpyceB\TMCms\HTML\Cms\Column\ColumnDelete;
 use neTpyceB\TMCms\HTML\Cms\Column\ColumnEdit;
 use neTpyceB\TMCms\HTML\Cms\Columns;
 use neTpyceB\TMCms\Log\App;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 
 defined('INC') or exit;
 
@@ -23,10 +25,10 @@ class CmsSettings
             ->addCrumb(__('All settings'))
         ;
 
-//        $settings = new CustomSettingRepository();
+        $settings = new CustomSettingRepository();
 
         $table = CmsTable::getInstance()
-//            ->addData($settings)
+            ->addData($settings)
             ->addColumn(ColumnData::getInstance('module')
                 ->enableOrderableColumn()
             )

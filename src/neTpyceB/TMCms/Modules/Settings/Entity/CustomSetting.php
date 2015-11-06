@@ -1,6 +1,6 @@
 <?php
 
-namespace neTpyceB\TMCms\Modules\Settings;
+namespace neTpyceB\TMCms\Modules\Settings\Entity;
 
 use neTpyceB\TMCms\Orm\Entity;
 
