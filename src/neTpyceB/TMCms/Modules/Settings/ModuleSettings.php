@@ -4,7 +4,9 @@ namespace neTpyceB\TMCms\Modules\Settings;
 
 use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
 use neTpyceB\TMCms\Modules\IModule;
+use neTpyceB\TMCms\Modules\ModuleManager;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 use neTpyceB\TMCms\Strings\Converter;
 use neTpyceB\TMCms\Traits\singletonInstanceTrait;
@@ -62,6 +64,11 @@ class ModuleSettings implements IModule {
 				$field['validate']['email'] = true;
 			}
 
+			// Input Type
+			if ($field['input_type'] == 'select') {
+				$field['options'] = ModuleSettings::getSelectTypeSettingOption(P, $field['key']);
+			}
+
 			$fields[$field['key']] = $field;
 		}
 
@@ -77,31 +84,46 @@ class ModuleSettings implements IModule {
 
 		return CmsFormHelper::outputForm(self::$tables['settings'],
 				$form_array
-		)->enableAjax();
+		)
+//			->enableAjax()
+		;
 	}
 
 	public static function requireUpdateModuleSettings($module)
 	{
 		if (!$_POST) return;
 
+		$settings = new CustomSettingRepository();
+		$settings->setWhereModule(P);
+		$to_unset = $settings->getPairs('key');
+
 		// Update (create) settings
 		foreach ($_POST as $k => $v) {
 			// Check existing
+			/** @var CustomSetting $setting */
 			$setting = CustomSettingRepository::findOneEntityByCriteria([
 				'module' => $module,
 				'key' => $k
 			]);
 
-			if (!$setting) {
-				$setting = new CustomSetting();
+			// Set 1 for checkboxes
+			if ($setting->getInputType() == 'checkbox' && !$v) {
+				$v = 1;
 			}
 
-			$setting->setModule($module);
-			$setting->setKey($k);
 			$setting->setValue($v);
+			$setting->save();
 
+			unset($to_unset[$setting->getId()]);
+		}
+
+		// Set 0 for unset checkboxes
+		foreach ($to_unset as $unset_id => $unset_key) {
+			$setting = new CustomSetting($unset_id);
+			$setting->setValue(0);
 			$setting->save();
 		}
+
 
 		if (IS_AJAX_REQUEST) {
 			die('1');
@@ -110,6 +132,11 @@ class ModuleSettings implements IModule {
 		back();
 	}
 
+	/**
+	 * @param string $module
+	 * @param string $key
+	 * @return CustomSetting
+	 */
 	public static function getCustomSetting($module, $key) {
 
 		$setting = CustomSettingRepository::findOneEntityByCriteria([
@@ -117,11 +144,23 @@ class ModuleSettings implements IModule {
 				'key' => $key
 		]);
 
-		/** @var CustomSetting $setting */
-		if ($setting) {
-			return $setting->getValue();
+		return $setting;
+	}
+
+	/**
+	 * @param string $module
+	 * @param string $key
+	 * @return array
+	 */
+	private static function getSelectTypeSettingOption($module, $key)
+	{
+		$setting = self::getCustomSetting($module, $key);
+		if (!$setting) {
+			return [];
 		}
 
-		return NULL;
+		$options = new CustomSettingOptionRepository;
+		$options->setWhereSettingId($setting->getId());
+		return $options->getPairs('option_name');
 	}
 }

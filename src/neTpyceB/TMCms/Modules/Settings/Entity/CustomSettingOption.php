@@ -10,6 +10,7 @@ use neTpyceB\TMCms\Orm\Entity;
  * @method setOptionName(string $name)
  *
  * @method string getOptionName()
+ * @method int getSettingId()
  */
 class CustomSettingOption extends Entity {
     protected $db_table = 'm_settings_options';

@@ -14,6 +14,7 @@ use neTpyceB\TMCms\HTML\Cms\Columns;
 use neTpyceB\TMCms\Log\App;
 use neTpyceB\TMCms\Modules\ModuleManager;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOption;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 
@@ -206,6 +207,147 @@ class CmsSettings
 
         $setting = new CustomSetting($id);
 
-        // TODO table with options
+        $breadcrumbs = BreadCrumbs::getInstance()
+            ->addCrumb(ucfirst(P))
+            ->addCrumb($setting->getModule())
+            ->addCrumb($setting->getKey())
+        ;
+
+        $options = new CustomSettingOptionRepository();
+        $options->setWhereSettingId($id);
+
+        $table = CmsTable::getInstance()
+            ->addData($options)
+            ->addColumn(ColumnData::getInstance('option_name')
+                ->enableOrderableColumn()
+            )
+            ->addColumn(ColumnEdit::getInstance('edit')
+                ->href('?p=' . P . '&do=setting_options_edit&id={%id%}')
+                ->width('1%')
+                ->value(__('Edit'))
+            )
+            ->addColumn(ColumnDelete::getInstance('delete')
+                ->href('?p=' . P . '&do=_setting_options_delete&id={%id%}')
+            )
+        ;
+
+        $columns = Columns::getInstance()
+            ->add($breadcrumbs)
+            ->add('<a class="btn btn-success" href="?p=' . P . '&do=setting_options_add&id='. $id .'">Add Setting Option</a>', ['align' => 'right'])
+        ;
+
+        echo $columns;
+        echo $table;
+    }
+
+    public function __setting_options_form($data = NULL)
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        /** @var CustomSetting Option$data */
+        $form_array = [
+            'data' => $data,
+            'action' => '?p=' . P . '&do=_setting_options_add',
+            'button' => 'Add',
+            'fields' => [
+                'option_name',
+                'setting_id' => [
+                    'type' => 'hidden',
+                    'value' => $id
+                ]
+            ],
+        ];
+
+        return CmsFormHelper::outputForm(ModuleSettings::$tables['options'],
+            $form_array
+        );
+    }
+
+    public function setting_options_add()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $setting = new CustomSetting($id);
+
+        echo BreadCrumbs::getInstance()
+            ->addCrumb(ucfirst(P))
+            ->addCrumb($setting->getModule())
+            ->addCrumb($setting->getKey())
+            ->addCrumb('Add Option')
+        ;
+
+        echo self::__setting_options_form();
+    }
+
+    public function setting_options_edit()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $option = new CustomSettingOption($id);
+
+        $setting = new CustomSetting($option->getSettingId());
+
+        echo BreadCrumbs::getInstance()
+            ->addCrumb(ucfirst(P))
+            ->addCrumb($setting->getModule())
+            ->addCrumb($setting->getKey())
+            ->addCrumb('Edit Option')
+            ->addCrumb($option->getOptionName())
+        ;
+
+        echo self::__setting_options_form($option)
+            ->setAction('?p=' . P . '&do=_setting_options_edit&id=' . $id)
+            ->setSubmitButton('Update');
+    }
+
+    public function _setting_options_add()
+    {
+        $option = new CustomSettingOption();
+        $option->loadDataFromArray($_POST);
+        $option->save();
+
+        $setting = new CustomSetting($option->getSettingId());
+
+        App::add('Custom Setting Option "' . $option->getOptionName() . '" added');
+
+        Messages::sendMessage('Setting Option added');
+
+        go('?p='. P .'&do=setting_options&id='. $setting->getId() .'&highlight='. $id);
+    }
+
+    public function _setting_options_edit()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $option = new CustomSettingOption($id);
+        $option->loadDataFromArray($_POST);
+        $option->save();
+
+        $setting = new CustomSetting($option->getSettingId());
+
+        App::add('Custom Setting Option "' . $option->getOptionName() . '" edited');
+
+        Messages::sendMessage('Setting Option updated');
+
+        go('?p='. P .'&do=setting_options&id='. $setting->getId() .'&highlight='. $id);
+    }
+
+    public function _setting_options_delete()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $option = new CustomSettingOption($id);
+        $option->deleteObject();
+
+        App::add('Custom Setting Option "' . $option->getOptionName() . '" deleted');
+
+        Messages::sendMessage('Setting Option deleted');
+
+        back();
     }
 }
