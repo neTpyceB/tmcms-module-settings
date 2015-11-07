@@ -14,6 +14,7 @@ use neTpyceB\TMCms\HTML\Cms\Columns;
 use neTpyceB\TMCms\Log\App;
 use neTpyceB\TMCms\Modules\ModuleManager;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
+use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 
 defined('INC') or exit;
@@ -27,8 +28,12 @@ class CmsSettings
             ->addCrumb(__('All settings'))
         ;
 
+        $options = new CustomSettingOptionRepository();
+
         $settings = new CustomSettingRepository();
         $settings->addOrderByField('id');
+        $settings->addSimpleSelectFields(['id', 'module', 'key', 'input_type']);
+        $settings->addSelectCountFromPairedObject($options, 'options', 'setting_id');
 
         $table = CmsTable::getInstance()
             ->addData($settings)
@@ -41,6 +46,12 @@ class CmsSettings
             ->addColumn(ColumnData::getInstance('input_type')
                 ->enableOrderableColumn()
             )
+            ->addColumn(ColumnData::getInstance('options')
+                ->width('1%')
+                ->align('right')
+                ->href('?p='. P .'&do=setting_options&id={%id%}')
+                ->enableOrderableColumn()
+            )
             ->addColumn(ColumnEdit::getInstance('edit')
                 ->href('?p=' . P . '&do=edit&id={%id%}')
                 ->width('1%')
@@ -49,6 +60,15 @@ class CmsSettings
             ->addColumn(ColumnDelete::getInstance('delete')
                 ->href('?p=' . P . '&do=_delete&id={%id%}')
             )
+            ->setCallbackFunction(function($data) {
+                foreach ($data as & $v) {
+                    if ($v['input_type'] != 'select') {
+                        $v['options'] = ' ';
+                    }
+                }
+
+                return $data;
+            })
         ;
 
         $columns = Columns::getInstance()
@@ -78,17 +98,17 @@ class CmsSettings
                 'input_type' => [
                     'options' => SQL::getEnumPairs(ModuleSettings::$tables['settings'], 'input_type')
                 ],
-                'input_options' => [ // TODO set checked
+                'input_options' => [
                     'type' => 'checkbox_list',
                     'options' => [
-                        'editor_wysiwyg' => 'Enable editor - Wysiwyg',
-                        'editor_files' => 'Enable editor - Filemanager',
-                        'editor_pages' => 'Enable editor - Pages',
-                        'require' => 'Field is required',
-                        'is_digit' => 'Check value is digit',
-                        'alphanum' => 'Check value is valid alphanumeric (no spaces)',
-                        'url' => 'Check value is valid URL',
-                        'email' => 'Check value is valid email',
+                        'editor_wysiwyg' => 'Wysiwyg',
+                        'editor_files' => 'Filemanager',
+                        'editor_pages' => 'Pages',
+                        'require' => 'Required',
+                        'is_digit' => 'Digit',
+                        'alphanum' => 'Alphanumeric',
+                        'url' => 'URL',
+                        'email' => 'email',
                     ]
                 ]
             ],
@@ -177,5 +197,15 @@ class CmsSettings
         Messages::sendMessage('Setting deleted');
 
         back();
+    }
+
+    public function setting_options()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $setting = new CustomSetting($id);
+
+        // TODO table with options
     }
 }

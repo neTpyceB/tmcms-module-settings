@@ -15,7 +15,8 @@ class ModuleSettings implements IModule {
 	use singletonInstanceTrait;
 
 	public static $tables = [
-		'settings' => 'm_settings'
+		'settings' => 'm_settings',
+		'options' => 'm_settings_options'
 	];
 
 	public static function requireTableForExternalModule($module) {
