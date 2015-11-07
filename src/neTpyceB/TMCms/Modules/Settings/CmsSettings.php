@@ -12,6 +12,7 @@ use neTpyceB\TMCms\HTML\Cms\Column\ColumnDelete;
 use neTpyceB\TMCms\HTML\Cms\Column\ColumnEdit;
 use neTpyceB\TMCms\HTML\Cms\Columns;
 use neTpyceB\TMCms\Log\App;
+use neTpyceB\TMCms\Modules\ModuleManager;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
 
@@ -27,6 +28,7 @@ class CmsSettings
         ;
 
         $settings = new CustomSettingRepository();
+        $settings->addOrderByField('id');
 
         $table = CmsTable::getInstance()
             ->addData($settings)
@@ -34,6 +36,9 @@ class CmsSettings
                 ->enableOrderableColumn()
             )
             ->addColumn(ColumnData::getInstance('key')
+                ->enableOrderableColumn()
+            )
+            ->addColumn(ColumnData::getInstance('input_type')
                 ->enableOrderableColumn()
             )
             ->addColumn(ColumnEdit::getInstance('edit')
@@ -64,11 +69,12 @@ class CmsSettings
             'button' => 'Add',
             'fields' => [
                 'module' => [
-                    'validate' => [
-                        'required' => true,
-                    ]
+                    'type' => 'datalist',
+                    'options' => ModuleManager::getListOfCustomModuleNames()
                 ],
-                'key',
+                'key' => [
+                    'required' => true
+                ],
                 'input_type' => [
                     'options' => SQL::getEnumPairs(ModuleSettings::$tables['settings'], 'input_type')
                 ],
@@ -124,6 +130,10 @@ class CmsSettings
 
     public function _add()
     {
+        if (!isset($_POST['input_options'])) {
+            $_POST['input_options'] = [];
+        }
+
         $setting = new CustomSetting();
         $setting->loadDataFromArray($_POST);
         $setting->save();
@@ -139,6 +149,10 @@ class CmsSettings
     {
         $id = abs((int)$_GET['id']);
         if (!$id) return;
+
+        if (!isset($_POST['input_options'])) {
+            $_POST['input_options'] = [];
+        }
 
         $setting = new CustomSetting($id);
         $setting->loadDataFromArray($_POST);

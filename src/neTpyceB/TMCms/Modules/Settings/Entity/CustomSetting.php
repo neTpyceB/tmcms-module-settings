@@ -22,14 +22,14 @@ class CustomSetting extends Entity {
 
     protected function beforeSave() {
         $options = $this->getInputOptions();
-        if ($options && is_array($options)) {
+        if (is_array($options)) {
             $this->setInputOptions(json_encode($options));
         }
     }
 
     protected function afterLoad() {
         $options = $this->getInputOptions();
-        if ($options && is_string($options)) {
+        if (is_string($options)) {
             $this->setInputOptions(json_decode($options, JSON_OBJECT_AS_ARRAY));
         }
     }
