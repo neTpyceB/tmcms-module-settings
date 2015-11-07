@@ -21,14 +21,16 @@ class ModuleSettings implements IModule {
 		'options' => 'm_settings_options'
 	];
 
-	public static function requireTableForExternalModule($module) {
+	public static function requireTableForExternalModule($module, $fields = []) {
 		$data = new CustomSettingRepository();
 		$data->setWhereModule($module);
 		$data->getAsArrayOfObjectData();
 
-		$fields = [];
+		foreach ($data->getAsArrayOfObjectData() as $key => $field) {
+			if (!isset($field['module'])) {
+				$field['module'] = P;
+			}
 
-		foreach ($data->getAsArrayOfObjectData() as $field) {
 			$field['title'] = Converter::symb2Ttl($field['key']);
 			$field['type'] = $field['input_type'];
 
@@ -85,7 +87,7 @@ class ModuleSettings implements IModule {
 		return CmsFormHelper::outputForm(self::$tables['settings'],
 				$form_array
 		)
-//			->enableAjax()
+			->enableAjax()
 		;
 	}
 
@@ -105,6 +107,12 @@ class ModuleSettings implements IModule {
 				'module' => $module,
 				'key' => $k
 			]);
+
+			if (!$setting) {
+				$setting = new CustomSetting();
+				$setting->setModule($module);
+				$setting->setKey($k);
+			}
 
 			// Set 1 for checkboxes
 			if ($setting->getInputType() == 'checkbox' && !$v) {
