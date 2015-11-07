@@ -85,7 +85,6 @@ class CmsSettings
                         'editor_files' => 'Enable editor - Filemanager',
                         'editor_pages' => 'Enable editor - Pages',
                         'require' => 'Field is required',
-                        'not_empty' => 'Check value is not empty',
                         'is_digit' => 'Check value is digit',
                         'alphanum' => 'Check value is valid alphanumeric (no spaces)',
                         'url' => 'Check value is valid URL',

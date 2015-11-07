@@ -6,6 +6,7 @@ use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
 use neTpyceB\TMCms\Modules\IModule;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
 use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
+use neTpyceB\TMCms\Strings\Converter;
 use neTpyceB\TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
@@ -20,19 +21,57 @@ class ModuleSettings implements IModule {
 	public static function requireTableForExternalModule($module) {
 		$data = new CustomSettingRepository();
 		$data->setWhereModule($module);
-		$data = $data->getPairs('value', 'key');
+		$data->getAsArrayOfObjectData();
 
-		// TODO different field types
+		$fields = [];
 
-		if (!$data) {
+		foreach ($data->getAsArrayOfObjectData() as $field) {
+			$field['title'] = Converter::symb2Ttl($field['key']);
+			$field['type'] = $field['input_type'];
+
+			$options_array = [];
+			if ($field['input_options'] && is_string($field['input_options'])) {
+				$options_array = json_decode($field['input_options'], JSON_OBJECT_AS_ARRAY);
+			}
+
+			// Validators and editors
+			if (isset($options_array['editor_wysiwyg'])) {
+				$field['edit'] = 'wysiwyg';
+			}
+			if (isset($options_array['editor_files'])) {
+				$field['edit'] = 'files';
+			}
+			if (isset($options_array['editor_pages'])) {
+				$field['edit'] = 'pages';
+			}
+			if (isset($options_array['require'])) {
+				$field['required'] = true;
+				$field['validate']['require'] = true;
+			}
+			if (isset($options_array['is_digit'])) {
+				$field['validate']['is_digit'] = true;
+			}
+			if (isset($options_array['alphanum'])) {
+				$field['validate']['alphanum'] = true;
+			}
+			if (isset($options_array['url'])) {
+				$field['validate']['url'] = true;
+			}
+			if (isset($options_array['email'])) {
+				$field['validate']['email'] = true;
+			}
+
+			$fields[$field['key']] = $field;
+		}
+
+		if (!$fields) {
 			return false;
 		}
 
 		$form_array = [
-				'data' => $data,
 				'action' => '?p=' . P . '&do=_settings',
 				'button' => __('Update'),
-				'fields' => array_keys($data)
+				'fields' => $fields
 		];
 
 		return CmsFormHelper::outputForm(self::$tables['settings'],
@@ -44,14 +83,17 @@ class ModuleSettings implements IModule {
 	{
 		if (!$_POST) return;
 
-		// Delete all settings for Module
-		$settings = new CustomSettingRepository;
-		$settings->setWhereModule($module);
-		$settings->deleteObjectCollection();
-
 		// Update (create) settings
 		foreach ($_POST as $k => $v) {
-			$setting = new CustomSetting();
+			// Check existing
+			$setting = CustomSettingRepository::findOneEntityByCriteria([
+				'module' => $module,
+				'key' => $k
+			]);
+
+			if (!$setting) {
+				$setting = new CustomSetting();
+			}
 
 			$setting->setModule($module);
 			$setting->setKey($k);
