@@ -21,7 +21,7 @@ class ModuleSettings implements IModule {
 		'options' => 'm_settings_options'
 	];
 
-	public static function requireTableForExternalModule($module, $fields = []) {
+	public static function requireTableForExternalModule($module = P, $fields = []) {
 		$data = new CustomSettingRepository();
 		$data->setWhereModule($module);
 		$data->getAsArrayOfObjectData();
@@ -91,7 +91,7 @@ class ModuleSettings implements IModule {
 		;
 	}
 
-	public static function requireUpdateModuleSettings($module)
+	public static function requireUpdateModuleSettings($module = P)
 	{
 		if (!$_POST) return;
 
@@ -170,5 +170,17 @@ class ModuleSettings implements IModule {
 		$options = new CustomSettingOptionRepository;
 		$options->setWhereSettingId($setting->getId());
 		return $options->getPairs('option_name');
+	}
+
+	// Get Setting pairs
+	public static function getSettingsPairs($module = null) {
+		if (!$module) {
+			return [];
+		}
+
+		$fields = new CustomSettingRepository();
+		$fields->setWhereModule($module);
+
+		return $fields->getPairs('value', 'key');
 	}
 }
