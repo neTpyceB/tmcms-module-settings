@@ -141,6 +141,7 @@ class ModuleSettings implements IModule {
 	}
 
 	/**
+	 * Get Setting object
 	 * @param string $module
 	 * @param string $key
 	 * @return CustomSetting
@@ -153,6 +154,21 @@ class ModuleSettings implements IModule {
 		]);
 
 		return $setting;
+	}
+
+	/**
+	 * Get Value of Setting
+	 * @param string $module
+	 * @param string $key
+	 * @return string
+	 */
+	public static function getCustomSettingValue($module, $key) {
+		$setting = self::getCustomSetting($module, $key);
+		if ($setting) {
+			return $setting->getValue();
+		}
+
+		return NULL;
 	}
 
 	/**
