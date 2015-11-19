@@ -27,6 +27,12 @@ class ModuleSettings implements IModule {
 		$data->getAsArrayOfObjectData();
 
 		foreach ($data->getAsArrayOfObjectData() as $key => $field) {
+			// Any existing data
+			if (isset($fields[$field['key']])) {
+				$field = array_merge($fields[$field['key']], $field);
+			}
+
+			// Supplied data
 			if (!isset($field['module'])) {
 				$field['module'] = P;
 			}
