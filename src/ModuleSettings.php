@@ -1,15 +1,15 @@
 <?php
 
-namespace TMCms\AdminTMCms\Modules\Settings;
+namespace TMCms\Modules\Settings;
 
-use TMCms\AdminTMCms\HTML\Cms\CmsFormHelper;
-use TMCms\AdminTMCms\Modules\IModule;
-use TMCms\AdminTMCms\Modules\ModuleManager;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSetting;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingRepository;
-use TMCms\AdminTMCms\Strings\Converter;
-use TMCms\AdminTMCms\Traits\singletonInstanceTrait;
+use TMCms\HTML\Cms\CmsFormHelper;
+use TMCms\Modules\IModule;
+use TMCms\Modules\ModuleManager;
+use TMCms\Modules\Settings\Entity\CustomSetting;
+use TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
+use TMCms\Modules\Settings\Entity\CustomSettingRepository;
+use TMCms\Strings\Converter;
+use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
 

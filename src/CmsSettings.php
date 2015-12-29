@@ -1,22 +1,22 @@
 <?php
 
-namespace TMCms\AdminTMCms\Modules\Settings;
+namespace TMCms\Modules\Settings;
 
-use TMCms\AdminTMCms\Admin\Messages;
-use TMCms\AdminTMCms\DB\SQL;
-use TMCms\AdminTMCms\HTML\BreadCrumbs;
-use TMCms\AdminTMCms\HTML\Cms\CmsFormHelper;
-use TMCms\AdminTMCms\HTML\Cms\CmsTable;
-use TMCms\AdminTMCms\HTML\Cms\Column\ColumnData;
-use TMCms\AdminTMCms\HTML\Cms\Column\ColumnDelete;
-use TMCms\AdminTMCms\HTML\Cms\Column\ColumnEdit;
-use TMCms\AdminTMCms\HTML\Cms\Columns;
-use TMCms\AdminTMCms\Log\App;
-use TMCms\AdminTMCms\Modules\ModuleManager;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSetting;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOption;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
-use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingRepository;
+use TMCms\Admin\Messages;
+use TMCms\DB\SQL;
+use TMCms\HTML\BreadCrumbs;
+use TMCms\HTML\Cms\CmsFormHelper;
+use TMCms\HTML\Cms\CmsTable;
+use TMCms\HTML\Cms\Column\ColumnData;
+use TMCms\HTML\Cms\Column\ColumnDelete;
+use TMCms\HTML\Cms\Column\ColumnEdit;
+use TMCms\HTML\Cms\Columns;
+use TMCms\Log\App;
+use TMCms\Modules\ModuleManager;
+use TMCms\Modules\Settings\Entity\CustomSetting;
+use TMCms\Modules\Settings\Entity\CustomSettingOption;
+use TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
+use TMCms\Modules\Settings\Entity\CustomSettingRepository;
 
 defined('INC') or exit;
 

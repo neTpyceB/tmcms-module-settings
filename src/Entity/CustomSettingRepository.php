@@ -1,8 +1,8 @@
 <?php
 
-namespace TMCms\AdminTMCms\Modules\Settings\Entity;
+namespace TMCms\Modules\Settings\Entity;
 
-use TMCms\AdminTMCms\Orm\EntityRepository;
+use TMCms\Orm\EntityRepository;
 
 /**
  * Class CustomSettingRepository
