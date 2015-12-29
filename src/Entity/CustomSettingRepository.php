@@ -1,8 +1,8 @@
 <?php
 
-namespace neTpyceB\TMCms\Modules\Settings\Entity;
+namespace TMCms\AdminTMCms\Modules\Settings\Entity;
 
-use neTpyceB\TMCms\Orm\EntityRepository;
+use TMCms\AdminTMCms\Orm\EntityRepository;
 
 /**
  * Class CustomSettingRepository

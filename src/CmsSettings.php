@@ -1,22 +1,22 @@
 <?php
 
-namespace neTpyceB\TMCms\Modules\Settings;
+namespace TMCms\AdminTMCms\Modules\Settings;
 
-use neTpyceB\TMCms\Admin\Messages;
-use neTpyceB\TMCms\DB\SQL;
-use neTpyceB\TMCms\HTML\BreadCrumbs;
-use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
-use neTpyceB\TMCms\HTML\Cms\CmsTable;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnData;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnDelete;
-use neTpyceB\TMCms\HTML\Cms\Column\ColumnEdit;
-use neTpyceB\TMCms\HTML\Cms\Columns;
-use neTpyceB\TMCms\Log\App;
-use neTpyceB\TMCms\Modules\ModuleManager;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOption;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
+use TMCms\AdminTMCms\Admin\Messages;
+use TMCms\AdminTMCms\DB\SQL;
+use TMCms\AdminTMCms\HTML\BreadCrumbs;
+use TMCms\AdminTMCms\HTML\Cms\CmsFormHelper;
+use TMCms\AdminTMCms\HTML\Cms\CmsTable;
+use TMCms\AdminTMCms\HTML\Cms\Column\ColumnData;
+use TMCms\AdminTMCms\HTML\Cms\Column\ColumnDelete;
+use TMCms\AdminTMCms\HTML\Cms\Column\ColumnEdit;
+use TMCms\AdminTMCms\HTML\Cms\Columns;
+use TMCms\AdminTMCms\Log\App;
+use TMCms\AdminTMCms\Modules\ModuleManager;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSetting;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOption;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingRepository;
 
 defined('INC') or exit;
 

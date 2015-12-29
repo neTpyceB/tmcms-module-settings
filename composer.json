@@ -8,14 +8,14 @@
   "authors": [
     {
       "name": "Vadims Petrusevs",
-      "email": "info@petrik.lv",
-      "homepage": "http://petrik.lv/",
+      "email": "info@devp.lv",
+      "homepage": "http://devp.lv/",
       "role": "Developer"
     }
   ],
   "autoload": {
-    "psr-0": {
-      "neTpyceB\\TMCms": "src"
+    "psr-4": {
+      "TMCms\\Modules\\Settings": "src"
     }
   }
 }

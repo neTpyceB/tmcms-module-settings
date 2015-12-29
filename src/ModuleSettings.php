@@ -1,15 +1,15 @@
 <?php
 
-namespace neTpyceB\TMCms\Modules\Settings;
+namespace TMCms\AdminTMCms\Modules\Settings;
 
-use neTpyceB\TMCms\HTML\Cms\CmsFormHelper;
-use neTpyceB\TMCms\Modules\IModule;
-use neTpyceB\TMCms\Modules\ModuleManager;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSetting;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
-use neTpyceB\TMCms\Modules\Settings\Entity\CustomSettingRepository;
-use neTpyceB\TMCms\Strings\Converter;
-use neTpyceB\TMCms\Traits\singletonInstanceTrait;
+use TMCms\AdminTMCms\HTML\Cms\CmsFormHelper;
+use TMCms\AdminTMCms\Modules\IModule;
+use TMCms\AdminTMCms\Modules\ModuleManager;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSetting;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingOptionRepository;
+use TMCms\AdminTMCms\Modules\Settings\Entity\CustomSettingRepository;
+use TMCms\AdminTMCms\Strings\Converter;
+use TMCms\AdminTMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
 
