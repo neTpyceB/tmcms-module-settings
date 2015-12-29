@@ -15,7 +15,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "TMCms\\Modules\\Settings": "src"
+      "TMCms\\Modules\\Settings\\": "src"
     }
   }
 }
