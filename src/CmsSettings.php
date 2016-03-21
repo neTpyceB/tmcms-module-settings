@@ -315,7 +315,7 @@ class CmsSettings
 
         Messages::sendMessage('Setting Option added');
 
-        go('?p='. P .'&do=setting_options&id='. $setting->getId() .'&highlight='. $id);
+        go('?p='. P .'&do=setting_options&id='. $setting->getId() .'&highlight='. $option->getId());
     }
 
     public function _setting_options_edit()
