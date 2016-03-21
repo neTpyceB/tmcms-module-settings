@@ -1,9 +1,0 @@
-CREATE TABLE `m_settings` (
- `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
- `module` varchar(255) NOT NULL,
- `key` varchar(255) NOT NULL,
- `value` varchar(255) NOT NULL,
- `input_type` enum('text','textarea','checkbox','select') NOT NULL,
- `input_options` varchar(255) NOT NULL,
- PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
