@@ -2,6 +2,8 @@
 
 namespace TMCms\Modules\Settings;
 
+use TMCms\Cache\Cacher;
+use TMCms\Config\Settings;
 use TMCms\HTML\Cms\CmsFormHelper;
 use TMCms\Modules\IModule;
 use TMCms\Modules\ModuleManager;
@@ -20,6 +22,8 @@ class ModuleSettings implements IModule {
 		'settings' => 'm_settings',
 		'options' => 'm_settings_options'
 	];
+
+	private static $cached_settings = [];
 
 	public static function requireTableForExternalModule($module = P, $fields = []) {
 		$data = new CustomSettingRepository();
@@ -153,13 +157,32 @@ class ModuleSettings implements IModule {
 	 * @return CustomSetting
 	 */
 	public static function getCustomSetting($module, $key) {
+		// Check cache
+		if (Settings::isCacheEnabled()) {
+			$cache_key = 'module_custom_settings_all';
+			$cacher = Cacher::getInstance()->getDefaultCacher();
 
-		$setting = CustomSettingRepository::findOneEntityByCriteria([
-				'module' => $module,
-				'key' => $key
-		]);
+			if (!self::$cached_settings) {
+				self::$cached_settings = $cacher->get($cache_key);
+			}
+		}
 
-		return $setting;
+		if (!self::$cached_settings) {
+			// To prevent more iterations
+			self::$cached_settings['empty']['empty'] = '';
+
+			$settings = new CustomSettingRepository;
+			foreach ($settings->getAsArrayOfObjects() as $setting) { /** @var CustomSetting $setting */
+				self::$cached_settings[$setting->getModule()][$setting->getKey()] = $setting;
+			}
+		}
+
+		// Save cache
+		if (Settings::isCacheEnabled()) {
+			$cacher->set($cache_key, self::$cached_settings, 86400);
+		}
+
+		return isset(self::$cached_settings[$module][$key]) ? self::$cached_settings[$module][$key] : NULL;
 	}
 
 	/**
