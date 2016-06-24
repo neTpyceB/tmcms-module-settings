@@ -25,6 +25,11 @@ class ModuleSettings implements IModule {
 
 	private static $cached_settings = [];
 
+	/**
+	 * @param string $module
+	 * @param array $fields
+	 * @return string
+	 */
 	public static function requireTableForExternalModule($module = P, $fields = []) {
 		$data = new CustomSettingRepository();
 		$data->setWhereModule($module);
