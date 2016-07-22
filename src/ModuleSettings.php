@@ -223,13 +223,12 @@ class ModuleSettings implements IModule {
 	}
 
 	// Get Setting pairs
-	public static function getSettingsPairs($module = null) {
-		if (!$module) {
-			return [];
-		}
-
+	public static function getSettingsPairs($module = NULL) {
 		$fields = new CustomSettingRepository();
-		$fields->setWhereModule($module);
+
+		if ($module) {
+			$fields->setWhereModule($module);
+		}
 
 		return $fields->getPairs('value', 'key');
 	}
