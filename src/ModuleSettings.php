@@ -108,8 +108,6 @@ class ModuleSettings implements IModule {
 
 	public static function requireUpdateModuleSettings($module = P)
 	{
-		if (!$_POST) return;
-
 		$settings = new CustomSettingRepository();
 		$settings->setWhereModule(P);
 		$to_unset = $settings->getPairs('key');
