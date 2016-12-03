@@ -1,15 +1,15 @@
 {
-  "name": "neTpyceB/TMCms-module-settings",
+  "name": "devp-eu/tmcms-module-settings",
   "type": "library",
   "description": "Module Settings for TMCms",
-  "keywords": ["module", "settings"],
-  "homepage": "http://devp.lv/",
+  "keywords": ["module", "settings", "TMCms"],
+  "homepage": "http://devp.eu/",
   "license": "proprietary",
   "authors": [
     {
       "name": "Vadims Petrusevs",
-      "email": "info@devp.lv",
-      "homepage": "http://devp.lv/",
+      "email": "info@devp.eu",
+      "homepage": "http://devp.eu/",
       "role": "Developer"
     }
   ],
