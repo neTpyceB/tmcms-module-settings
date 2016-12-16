@@ -24,9 +24,10 @@ class CmsSettings
 {
     public function _default()
     {
-        $breadcrumbs = BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P))
             ->addCrumb(__('All settings'))
+            ->addAction('Add Custom Setting', '?p=' . P . '&do=add')
         ;
 
         $options = new CustomSettingOptionRepository();
@@ -37,6 +38,7 @@ class CmsSettings
         $settings->addSelectCountFromPairedObject($options, 'options', 'setting_id');
 
         $table = CmsTable::getInstance()
+            ->setHeadingTitle('Custom settings')
             ->addData($settings)
             ->addColumn(ColumnData::getInstance('module')
                 ->enableOrderableColumn()
@@ -72,12 +74,6 @@ class CmsSettings
             })
         ;
 
-        $columns = Columns::getInstance()
-            ->add($breadcrumbs)
-            ->add('<a class="btn btn-success" href="?p=' . P . '&do=add">Add Custom Setting</a>', ['align' => 'right'])
-        ;
-
-        echo $columns;
         echo $table;
     }
 
@@ -85,6 +81,7 @@ class CmsSettings
     {
         /** @var CustomSetting $data */
         $form_array = [
+            'title' => $data ? __('Edit custom setting') : __('Add custom setting'),
             'data' => $data,
             'action' => '?p=' . P . '&do=_add',
             'button' => 'Add',
@@ -122,7 +119,7 @@ class CmsSettings
 
     public function add()
     {
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P))
             ->addCrumb('Add Setting')
         ;
@@ -137,7 +134,7 @@ class CmsSettings
 
         $setting = new CustomSetting($id);
 
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P), '?p='. P)
             ->addCrumb('Edit Setting')
             ->addCrumb($setting->getKey())
@@ -217,6 +214,7 @@ class CmsSettings
         $options->setWhereSettingId($id);
 
         $table = CmsTable::getInstance()
+            ->setHeadingTitle('Options')
             ->addData($options)
             ->addColumn(ColumnData::getInstance('option_name')
                 ->enableOrderableColumn()
@@ -247,6 +245,7 @@ class CmsSettings
 
         /** @var CustomSetting Option$data */
         $form_array = [
+            'title' => $data ? __('Edit option') : __('Add option'),
             'data' => $data,
             'action' => '?p=' . P . '&do=_setting_options_add',
             'button' => 'Add',
@@ -271,7 +270,7 @@ class CmsSettings
 
         $setting = new CustomSetting($id);
 
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P))
             ->addCrumb($setting->getModule())
             ->addCrumb($setting->getKey())
@@ -290,7 +289,7 @@ class CmsSettings
 
         $setting = new CustomSetting($option->getSettingId());
 
-        echo BreadCrumbs::getInstance()
+        BreadCrumbs::getInstance()
             ->addCrumb(ucfirst(P))
             ->addCrumb($setting->getModule())
             ->addCrumb($setting->getKey())
