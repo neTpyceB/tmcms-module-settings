@@ -58,7 +58,7 @@ class CmsSettings
             ->addColumn(ColumnEdit::getInstance('edit')
                 ->href('?p=' . P . '&do=edit&id={%id%}')
                 ->width('1%')
-                ->value(__('Edit'))
+                ->setValue(__('Edit'))
             )
             ->addColumn(ColumnDelete::getInstance('delete')
                 ->href('?p=' . P . '&do=_delete&id={%id%}')
@@ -75,6 +75,15 @@ class CmsSettings
         ;
 
         echo $table;
+    }
+
+    public function add()
+    {
+        BreadCrumbs::getInstance()
+            ->addCrumb(ucfirst(P))
+            ->addCrumb('Add Setting');
+
+        echo self::__settings_form();
     }
 
     public function __settings_form($data = NULL)
@@ -115,16 +124,6 @@ class CmsSettings
         return CmsFormHelper::outputForm(ModuleSettings::$tables['settings'],
             $form_array
         );
-    }
-
-    public function add()
-    {
-        BreadCrumbs::getInstance()
-            ->addCrumb(ucfirst(P))
-            ->addCrumb('Add Setting')
-        ;
-
-        echo self::__settings_form();
     }
 
     public function edit()
@@ -222,7 +221,7 @@ class CmsSettings
             ->addColumn(ColumnEdit::getInstance('edit')
                 ->href('?p=' . P . '&do=setting_options_edit&id={%id%}')
                 ->width('1%')
-                ->value(__('Edit'))
+                ->setValue(__('Edit'))
             )
             ->addColumn(ColumnDelete::getInstance('delete')
                 ->href('?p=' . P . '&do=_setting_options_delete&id={%id%}')
@@ -236,6 +235,22 @@ class CmsSettings
 
         echo $columns;
         echo $table;
+    }
+
+    public function setting_options_add()
+    {
+        $id = abs((int)$_GET['id']);
+        if (!$id) return;
+
+        $setting = new CustomSetting($id);
+
+        BreadCrumbs::getInstance()
+            ->addCrumb(ucfirst(P))
+            ->addCrumb($setting->getModule())
+            ->addCrumb($setting->getKey())
+            ->addCrumb('Add Option');
+
+        echo self::__setting_options_form();
     }
 
     public function __setting_options_form($data = NULL)
@@ -261,23 +276,6 @@ class CmsSettings
         return CmsFormHelper::outputForm(ModuleSettings::$tables['options'],
             $form_array
         );
-    }
-
-    public function setting_options_add()
-    {
-        $id = abs((int)$_GET['id']);
-        if (!$id) return;
-
-        $setting = new CustomSetting($id);
-
-        BreadCrumbs::getInstance()
-            ->addCrumb(ucfirst(P))
-            ->addCrumb($setting->getModule())
-            ->addCrumb($setting->getKey())
-            ->addCrumb('Add Option')
-        ;
-
-        echo self::__setting_options_form();
     }
 
     public function setting_options_edit()
