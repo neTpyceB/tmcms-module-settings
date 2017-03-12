@@ -27,18 +27,19 @@ class ModuleSettings implements IModule {
 
 	/**
 	 * @param string $module
-	 * @param array $fields
+     * @param array $predefined_fields
 	 * @return string
 	 */
-	public static function requireTableForExternalModule($module = P, $fields = []) {
+    public static function requireTableForExternalModule($module = P, $predefined_fields = [])
+    {
 		$data = new CustomSettingRepository();
 		$data->setWhereModule($module);
 		$data->getAsArrayOfObjectData();
 
 		foreach ($data->getAsArrayOfObjectData() as $key => $field) {
 			// Any existing data
-			if (isset($fields[$field['key']])) {
-				$field = array_merge($fields[$field['key']], $field);
+            if (isset($predefined_fields[$field['key']])) {
+                $field = array_merge($predefined_fields[$field['key']], $field);
 			}
 
 			// Supplied data
@@ -47,7 +48,10 @@ class ModuleSettings implements IModule {
 			}
 
 			$field['title'] = Converter::symb2Ttl($field['key']);
-			$field['type'] = $field['input_type'];
+            if (!$field['type']) {
+                $field['type'] = $field['input_type'];
+            }
+            $field['input_type'] = $field['type'];
 
 			$options_array = [];
 			if ($field['input_options'] && is_string($field['input_options'])) {
@@ -86,17 +90,17 @@ class ModuleSettings implements IModule {
 				$field['options'] = ModuleSettings::getSelectTypeSettingOption(P, $field['key']);
 			}
 
-			$fields[$field['key']] = $field;
+            $predefined_fields[$field['key']] = $field;
 		}
 
-		if (!$fields) {
+        if (!$predefined_fields) {
 			return false;
 		}
 
 		$form_array = [
 				'action' => '?p=' . P . '&do=_settings',
 				'button' => __('Update'),
-				'fields' => $fields
+            'fields' => $predefined_fields
 		];
 
 		return CmsFormHelper::outputForm(self::$tables['settings'],
@@ -106,7 +110,65 @@ class ModuleSettings implements IModule {
 		;
 	}
 
-	public static function requireUpdateModuleSettings($module = P)
+    /**
+     * @param string $module
+     * @param string $key
+     * @return array
+     */
+    private static function getSelectTypeSettingOption($module, $key)
+    {
+        $setting = self::getCustomSetting($module, $key);
+        if (!$setting) {
+            return [];
+        }
+
+        $options = new CustomSettingOptionRepository;
+        $options->setWhereSettingId($setting->getId());
+        return $options->getPairs('option_name');
+    }
+
+    /**
+     * Get Setting object
+     * @param string $module
+     * @param string $key
+     * @return CustomSetting
+     */
+    public static function getCustomSetting($module, $key)
+    {
+        // Check cache
+        if (Settings::isCacheEnabled()) {
+            $cache_key = 'module_custom_settings_all';
+            $cacher = Cacher::getInstance()->getDefaultCacher();
+
+            if (!self::$cached_settings) {
+                self::$cached_settings = $cacher->get($cache_key);
+            }
+        }
+
+        if (!self::$cached_settings) {
+            // To prevent more iterations
+            self::$cached_settings['empty']['empty'] = '';
+
+            $settings = new CustomSettingRepository;
+            foreach ($settings->getAsArrayOfObjects() as $setting) {
+                /** @var CustomSetting $setting */
+                self::$cached_settings[$setting->getModule()][$setting->getKey()] = $setting;
+            }
+        }
+
+        // Save cache
+        if (Settings::isCacheEnabled()) {
+            $cacher->set($cache_key, self::$cached_settings, 86400);
+        }
+
+        return isset(self::$cached_settings[$module][$key]) ? self::$cached_settings[$module][$key] : NULL;
+    }
+
+    /**
+     * @param string $module
+     * @param array $predefined_fields use it to save checkboxes, because they all have value 0
+     */
+    public static function requireUpdateModuleSettings($module = P, $predefined_fields = [])
 	{
 		$settings = new CustomSettingRepository();
 		$settings->setWhereModule(P);
@@ -128,8 +190,9 @@ class ModuleSettings implements IModule {
 			}
 
 			// Set 1 for checkboxes
-			if ($setting->getInputType() == 'checkbox' && !$v) {
+            if ((isset($predefined_fields[$k]) && $predefined_fields[$k]['type'] == 'checkbox' && !$v) || ($setting->getInputType() == 'checkbox' && !$v)) {
 				$v = 1;
+                $setting->setInputType('checkbox');
 			}
 
 			$setting->setValue($v);
@@ -154,41 +217,6 @@ class ModuleSettings implements IModule {
 	}
 
 	/**
-	 * Get Setting object
-	 * @param string $module
-	 * @param string $key
-	 * @return CustomSetting
-	 */
-	public static function getCustomSetting($module, $key) {
-		// Check cache
-		if (Settings::isCacheEnabled()) {
-			$cache_key = 'module_custom_settings_all';
-			$cacher = Cacher::getInstance()->getDefaultCacher();
-
-			if (!self::$cached_settings) {
-				self::$cached_settings = $cacher->get($cache_key);
-			}
-		}
-
-		if (!self::$cached_settings) {
-			// To prevent more iterations
-			self::$cached_settings['empty']['empty'] = '';
-
-			$settings = new CustomSettingRepository;
-			foreach ($settings->getAsArrayOfObjects() as $setting) { /** @var CustomSetting $setting */
-				self::$cached_settings[$setting->getModule()][$setting->getKey()] = $setting;
-			}
-		}
-
-		// Save cache
-		if (Settings::isCacheEnabled()) {
-			$cacher->set($cache_key, self::$cached_settings, 86400);
-		}
-
-		return isset(self::$cached_settings[$module][$key]) ? self::$cached_settings[$module][$key] : NULL;
-	}
-
-	/**
 	 * Get Value of Setting
 	 * @param string $module
 	 * @param string $key
@@ -203,25 +231,9 @@ class ModuleSettings implements IModule {
 		return NULL;
 	}
 
-	/**
-	 * @param string $module
-	 * @param string $key
-	 * @return array
-	 */
-	private static function getSelectTypeSettingOption($module, $key)
-	{
-		$setting = self::getCustomSetting($module, $key);
-		if (!$setting) {
-			return [];
-		}
-
-		$options = new CustomSettingOptionRepository;
-		$options->setWhereSettingId($setting->getId());
-		return $options->getPairs('option_name');
-	}
-
 	// Get Setting pairs
-	public static function getSettingsPairs($module = NULL) {
+
+    public static function getSettingsPairs($module = NULL) {
 		$fields = new CustomSettingRepository();
 
 		if ($module) {
