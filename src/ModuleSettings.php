@@ -48,7 +48,7 @@ class ModuleSettings implements IModule {
 			}
 
 			$field['title'] = Converter::symb2Ttl($field['key']);
-            if (!$field['type']) {
+            if (!isset($field['type']) || !$field['type']) {
                 $field['type'] = $field['input_type'];
             }
             $field['input_type'] = $field['type'];
