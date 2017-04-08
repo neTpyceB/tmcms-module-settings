@@ -13,16 +13,16 @@ class CustomSettingRepository extends EntityRepository {
     protected $db_table = 'm_settings';
     protected $table_structure = [
         'fields' => [
-            'module' => [
+            'module'        => [
                 'type' => 'varchar',
             ],
-            'key' => [
+            'key'           => [
                 'type' => 'varchar',
             ],
-            'value' => [
+            'value'         => [
                 'type' => 'varchar',
             ],
-            'input_type' => [
+            'input_type'    => [
                 'type' => 'enum',
                 'options' => [
                     'text',
@@ -32,6 +32,9 @@ class CustomSettingRepository extends EntityRepository {
                 ],
             ],
             'input_options' => [
+                'type' => 'varchar',
+            ],
+            'hint'          => [
                 'type' => 'varchar',
             ],
         ],

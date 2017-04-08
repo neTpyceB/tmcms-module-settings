@@ -95,14 +95,15 @@ class CmsSettings
             'action' => '?p=' . P . '&do=_add',
             'button' => 'Add',
             'fields' => [
-                'module' => [
+                'module'        => [
                     'type' => 'datalist',
                     'options' => ModuleManager::getListOfCustomModuleNames()
                 ],
-                'key' => [
+                'key'           => [
                     'required' => true
                 ],
-                'input_type' => [
+                'hint'          => [],
+                'input_type'    => [
                     'options' => SQL::getEnumPairs(ModuleSettings::$tables['settings'], 'input_type')
                 ],
                 'input_options' => [
