@@ -161,6 +161,11 @@ class ModuleSettings implements IModule {
             $cacher->set($cache_key, self::$cached_settings, 86400);
         }
 
+		if(!isset(self::$cached_settings[$module][$key])){
+			$item = new CustomSetting();
+			$item->setModule($module)->setKey($key)->setInputType('text')->save();
+		}
+
         return isset(self::$cached_settings[$module][$key]) ? self::$cached_settings[$module][$key] : NULL;
     }
 
