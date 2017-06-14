@@ -70,6 +70,9 @@ class ModuleSettings implements IModule {
             if (isset($options_array['editor_pages'])) {
                 $field['edit'] = 'pages';
             }
+            if (isset($options_array['editor_map'])) {
+                $field['edit'] = 'map';
+            }
             if (isset($options_array['require'])) {
                 $field['required'] = true;
                 $field['validate']['require'] = true;

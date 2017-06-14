@@ -112,6 +112,7 @@ class CmsSettings
                         'editor_wysiwyg' => 'Wysiwyg',
                         'editor_files' => 'Filemanager',
                         'editor_pages' => 'Pages',
+                        'editor_map' => 'Map',
                         'require' => 'Required',
                         'is_digit' => 'Digit',
                         'alphanum' => 'Alphanumeric',
