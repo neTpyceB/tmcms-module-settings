@@ -49,7 +49,7 @@ class ModuleSettings implements IModule {
                 $field['module'] = P;
             }
 
-            $field['title'] = Converter::symb2Ttl($field['key']);
+            $field['title'] = Converter::charsToNormalTitle($field['key']);
             if (!isset($field['type']) || !$field['type']) {
                 $field['type'] = $field['input_type'];
             }
