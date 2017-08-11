@@ -143,7 +143,7 @@ class CmsSettings
 
         echo self::__settings_form($setting)
             ->setAction('?p=' . P . '&do=_edit&id=' . $id)
-            ->setSubmitButton('Update');
+            ->setButtonSubmit('Update');
     }
 
     public function _add()
@@ -299,7 +299,7 @@ class CmsSettings
 
         echo self::__setting_options_form($option)
             ->setAction('?p=' . P . '&do=_setting_options_edit&id=' . $id)
-            ->setSubmitButton('Update');
+            ->setButtonSubmit('Update');
     }
 
     public function _setting_options_add()
