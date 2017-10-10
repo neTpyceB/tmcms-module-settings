@@ -66,6 +66,7 @@ class ModuleSettings implements IModule {
             }
             if (isset($options_array['editor_files'])) {
                 $field['edit'] = 'files';
+                $field['path'] = DIR_PUBLIC_URL;
             }
             if (isset($options_array['editor_pages'])) {
                 $field['edit'] = 'pages';
