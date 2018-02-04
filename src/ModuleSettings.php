@@ -141,16 +141,6 @@ class ModuleSettings implements IModule {
      */
     public static function getCustomSetting($module, $key)
     {
-        // Check cache
-        if (Settings::isCacheEnabled()) {
-            $cache_key = 'module_custom_settings_all';
-            $cacher = Cacher::getInstance()->getDefaultCacher();
-
-            if (!self::$cached_settings) {
-                self::$cached_settings = $cacher->get($cache_key);
-            }
-        }
-
         if (!self::$cached_settings) {
             // To prevent more iterations
             self::$cached_settings['empty']['empty'] = '';
@@ -162,15 +152,10 @@ class ModuleSettings implements IModule {
             }
         }
 
-        // Save cache
-        if (Settings::isCacheEnabled()) {
-            $cacher->set($cache_key, self::$cached_settings, 86400);
+        if(!isset(self::$cached_settings[$module][$key])){
+            $item = new CustomSetting();
+            $item->setModule($module)->setKey($key)->setInputType('text')->save();
         }
-
-		if(!isset(self::$cached_settings[$module][$key])){
-			$item = new CustomSetting();
-			$item->setModule($module)->setKey($key)->setInputType('text')->save();
-		}
 
         return isset(self::$cached_settings[$module][$key]) ? self::$cached_settings[$module][$key] : NULL;
     }
