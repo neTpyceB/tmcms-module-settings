@@ -56,12 +56,12 @@ class CmsSettings
                 ->enableOrderableColumn()
             )
             ->addColumn(ColumnEdit::getInstance('edit')
-                ->href('?p=' . P . '&do=edit&id={%id%}')
-                ->width('1%')
+                ->setHref('?p=' . P . '&do=edit&id={%id%}')
+                ->setWidth('1%')
                 ->setValue(__('Edit'))
             )
             ->addColumn(ColumnDelete::getInstance('delete')
-                ->href('?p=' . P . '&do=_delete&id={%id%}')
+                ->setHref('?p=' . P . '&do=_delete&id={%id%}')
             )
             ->setCallbackFunction(function($data) {
                 foreach ($data as & $v) {
@@ -221,12 +221,12 @@ class CmsSettings
                 ->enableOrderableColumn()
             )
             ->addColumn(ColumnEdit::getInstance('edit')
-                ->href('?p=' . P . '&do=setting_options_edit&id={%id%}')
-                ->width('1%')
+                ->setHref('?p=' . P . '&do=setting_options_edit&id={%id%}')
+                ->setWidth('1%')
                 ->setValue(__('Edit'))
             )
             ->addColumn(ColumnDelete::getInstance('delete')
-                ->href('?p=' . P . '&do=_setting_options_delete&id={%id%}')
+                ->setHref('?p=' . P . '&do=_setting_options_delete&id={%id%}')
             )
         ;
 
