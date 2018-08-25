@@ -18,6 +18,7 @@
     }
   ],
   "require": {
+    "php": ">=7.1",
     "devp-eu/tmcms-core": "dev-master",
     "devp-eu/tmcms-panel": "dev-master"
   },

@@ -32,12 +32,13 @@ class ModuleSettings implements IModule {
      * @param array  $predefined_fields
      * @return string
      */
-    public static function requireTableForExternalModule($module = P, $predefined_fields = [])
+    public static function requireTableForExternalModule(?string $module = P, ?array $predefined_fields = []): string
     {
         $data = new CustomSettingRepository();
         $data->setWhereModule($module);
         $data->getAsArrayOfObjectData();
 
+        // Add database saved field to predefined array
         foreach ($data->getAsArrayOfObjectData() as $key => $field) {
             // Any existing data
             if (isset($predefined_fields[$field['key']])) {
